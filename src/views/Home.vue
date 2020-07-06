@@ -37,7 +37,9 @@
     </a-layout-header>
     <a-layout-content :style="{ marginTop: '70px' }">
       <!-- <div class="banner"></div> -->
+       <transition mode="out-in">
        <router-view></router-view>
+      </transition>
       <!-- <div class="content"></div> -->
     </a-layout-content>
     <a-layout-footer :style="{ textAlign: 'center' }">
@@ -106,7 +108,7 @@ export default {
 .ant-layout-content {
   width: 100%;
   /* min-width: 1200px; */
-  min-height: 1500px;
+  /* min-height: 1500px; */
   margin: 0 auto;
   background-color: #fff;
 }
@@ -116,4 +118,12 @@ export default {
 .ant-layout-footer {
 /* background-color: #448885; */
 }
+/* 过渡*/
+   .v-enter,.v-leave-to{
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        .v-enter-active,.v-leave-active{
+            transition: all 0.3s ease;
+        }
 </style>
