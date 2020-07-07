@@ -65,68 +65,13 @@
         <h2>问题推荐</h2>
         <div class="recommond-main">
           <a-row :gutter="[30,30]">
-            <a-col :span="8">
+            <a-col :span="8" v-for=" item in recommendList" :key="item.id">
               <a-card hoverable>
-                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
-                <a-card-meta title="二甲双胍不良反应">
+                <img slot="cover"  alt="example" :src="item.url" />
+                <a-card-meta :title="item.K_type">
                   <template slot="description">
-                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
-                    <a-button class="detail" size="small">详情>></a-button>
-                  </template>
-                </a-card-meta>
-              </a-card>
-            </a-col>
-            <a-col :span="8">
-              <a-card hoverable>
-                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
-                <a-card-meta title="二甲双胍不良反应">
-                  <template slot="description">
-                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
-                    <a-button class="detail" size="small">详情>></a-button>
-                  </template>
-                </a-card-meta>
-              </a-card>
-            </a-col>
-            <a-col :span="8">
-              <a-card hoverable>
-                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
-                <a-card-meta title="二甲双胍不良反应">
-                  <template slot="description">
-                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
-                    <a-button class="detail" size="small">详情>></a-button>
-                  </template>
-                </a-card-meta>
-              </a-card>
-            </a-col>
-            <a-col :span="8">
-              <a-card hoverable>
-                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
-                <a-card-meta title="二甲双胍不良反应">
-                  <template slot="description">
-                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
-                    <a-button class="detail" size="small">详情>></a-button>
-                  </template>
-                </a-card-meta>
-              </a-card>
-            </a-col>
-            <a-col :span="8">
-              <a-card hoverable>
-                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
-                <a-card-meta title="二甲双胍不良反应">
-                  <template slot="description">
-                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
-                    <a-button class="detail" size="small">详情>></a-button>
-                  </template>
-                </a-card-meta>
-              </a-card>
-            </a-col>
-            <a-col :span="8">
-              <a-card hoverable>
-                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
-                <a-card-meta title="二甲双胍不良反应">
-                  <template slot="description">
-                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
-                    <a-button class="detail" size="small">详情>></a-button>
+                   <span class="recommond-body" > {{ item.Q_content }}</span>
+                    <a-button class="detail" size="small"  @click="toDetail(item.id)">详情>></a-button>
                   </template>
                 </a-card-meta>
               </a-card>
@@ -134,17 +79,21 @@
           </a-row>
         </div>
       </div>
-      <div id="introduction">222</div>
-      <div id="statistic">333</div>
-      <div id="add">333</div>
+      <div id="introduction">
+          <h2>内容说明</h2>
+      </div>
+      <div id="statistic">
+          <h2>数据统计</h2>
+      </div>
+      <div id="add">
+          <h2>补充纠错</h2>
+      </div>
     </div>
     <!-- 主体内容 -->
   </div>
 </template>
 
 <script>
-// import ConsultList from './DrugConsult/ConsultList'
-// import ConsultDetail from './DrugConsult/ConsultDetail'
 export default {
   // components: { ConsultList, ConsultDetail },
   data () {
@@ -160,12 +109,17 @@ export default {
       list: [],
       page: 1,
       total: 0,
-      spin: false
+      spin: false,
+      // 推荐
+      recommend: [],
+      recommendList: []
     }
   },
   mounted () {
     this.targetOffset = window.innerHeight / 2
     this.getRecommend()
+    this.recommendList = this.recommend
+    // console.log(this.recommendList)
   },
   methods: {
     //* *******问题检索************** */
@@ -180,7 +134,7 @@ export default {
       }
       this.spin = true
       const { data: res } = await this.$http.post(`/index/resultlist?pagenum=${this.searchForm.pagenum}`, JSON.stringify(this.searchForm))
-      console.log(res)
+      // console.log(res)
       this.list = res.data
       this.page = res.current_page
       this.total = res.total
@@ -208,15 +162,22 @@ export default {
     },
     onChange (page) {
       this.searchForm.pagenum = page
-      // console.log(this.searchForm)
-
       this.onSearch()
     },
     //* *******问题检索************** */
     //* *******问题推荐************** */
     async getRecommend () {
       const { data: res } = await this.$http.get('/index/recommend')
-      console.log(res)
+      this.recommend = res
+      this.recommend.forEach(async item => {
+        const { data: res } = await this.$http.get(`/index/detail?id=${item.id}`)
+        // console.log(res)
+        let result = {}
+        result = res
+        result.url = require('../assets/recommend/' + item.url)
+        this.recommendList.push(result)
+        // item.url = '../assets/recommend/img3.jpg'
+      })
     }
     //* *******问题推荐************** */
 
@@ -324,5 +285,16 @@ export default {
 h2 {
   padding-top: 20px;
   text-align: center;
+}
+.ant-card {
+  height: 400px;
+}
+.recommond-body {
+  min-height: 84px;
+    overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
 </style>
