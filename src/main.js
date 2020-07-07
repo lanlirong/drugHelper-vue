@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 
-import { Button, Input, Layout, Menu, Icon, Select, Anchor, List, Avatar, Divider, Pagination, Spin, message, notification, PageHeader, Tabs, Tag } from 'ant-design-vue'
+import { Button, Input, Layout, Menu, Icon, Select, Anchor, List, Avatar, Divider, Pagination, Spin, message, notification, PageHeader, Tabs, Tag, Row, Col, Card } from 'ant-design-vue'
 // import { InputGroup } from 'ant-design-vue/types/input/input-group'
 // import 'ant-design-vue/dist/antd.css'
 
@@ -47,6 +47,10 @@ Vue.component(PageHeader.name, PageHeader)
 Vue.component(Tabs.name, Tabs)
 Vue.component(Tabs.TabPane.name, Tabs.TabPane)
 Vue.component(Tag.name, Tag)
+Vue.component(Row.name, Row)
+Vue.component(Col.name, Col)
+Vue.component(Card.name, Card)
+Vue.component(Card.Meta.name, Card.Meta)
 
 new Vue({
   router,

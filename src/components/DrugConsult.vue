@@ -61,7 +61,79 @@
         </div>
         <!-- 搜索内容 -->
       </div>
-      <div id="recommond">111</div>
+      <div id="recommond">
+        <h2>问题推荐</h2>
+        <div class="recommond-main">
+          <a-row :gutter="[30,30]">
+            <a-col :span="8">
+              <a-card hoverable>
+                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
+                <a-card-meta title="二甲双胍不良反应">
+                  <template slot="description">
+                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
+                    <a-button class="detail" size="small">详情>></a-button>
+                  </template>
+                </a-card-meta>
+              </a-card>
+            </a-col>
+            <a-col :span="8">
+              <a-card hoverable>
+                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
+                <a-card-meta title="二甲双胍不良反应">
+                  <template slot="description">
+                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
+                    <a-button class="detail" size="small">详情>></a-button>
+                  </template>
+                </a-card-meta>
+              </a-card>
+            </a-col>
+            <a-col :span="8">
+              <a-card hoverable>
+                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
+                <a-card-meta title="二甲双胍不良反应">
+                  <template slot="description">
+                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
+                    <a-button class="detail" size="small">详情>></a-button>
+                  </template>
+                </a-card-meta>
+              </a-card>
+            </a-col>
+            <a-col :span="8">
+              <a-card hoverable>
+                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
+                <a-card-meta title="二甲双胍不良反应">
+                  <template slot="description">
+                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
+                    <a-button class="detail" size="small">详情>></a-button>
+                  </template>
+                </a-card-meta>
+              </a-card>
+            </a-col>
+            <a-col :span="8">
+              <a-card hoverable>
+                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
+                <a-card-meta title="二甲双胍不良反应">
+                  <template slot="description">
+                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
+                    <a-button class="detail" size="small">详情>></a-button>
+                  </template>
+                </a-card-meta>
+              </a-card>
+            </a-col>
+            <a-col :span="8">
+              <a-card hoverable>
+                <img slot="cover" alt="example" src="../assets/recommend/img3.jpg" />
+                <a-card-meta title="二甲双胍不良反应">
+                  <template slot="description">
+                    患者王先生，新诊断2型糖尿病，服用二甲双胍肠溶片控制血糖。口服二甲双胍后腹泻严重，咨询还能用什么药？
+                    <a-button class="detail" size="small">详情>></a-button>
+                  </template>
+                </a-card-meta>
+              </a-card>
+            </a-col>
+          </a-row>
+        </div>
+      </div>
       <div id="introduction">222</div>
       <div id="statistic">333</div>
       <div id="add">333</div>
@@ -93,12 +165,13 @@ export default {
   },
   mounted () {
     this.targetOffset = window.innerHeight / 2
+    this.getRecommend()
   },
   methods: {
     //* *******问题检索************** */
     async  onSearch () {
       if (this.searchForm.search === '') {
-        return this.$message.warning('输入不能为空')
+        return this.$message.warning('检索不能为空')
       }
       if (this.searchway === '关键词') {
         this.searchForm.way = 2
@@ -138,8 +211,14 @@ export default {
       // console.log(this.searchForm)
 
       this.onSearch()
-    }
+    },
     //* *******问题检索************** */
+    //* *******问题推荐************** */
+    async getRecommend () {
+      const { data: res } = await this.$http.get('/index/recommend')
+      console.log(res)
+    }
+    //* *******问题推荐************** */
 
   }
 }
@@ -178,6 +257,15 @@ export default {
 #recommond {
   background-color: #f5f5f5;
   min-height: 600px;
+}
+.recommond-main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+.detail {
+  margin-top: 10px;
+  float: right;
 }
 #introduction {
   min-height: 300px;
@@ -232,5 +320,9 @@ export default {
   margin-top: 20px;
   margin-bottom: 40px;
   /* transform: translateX(50%); */
+}
+h2 {
+  padding-top: 20px;
+  text-align: center;
 }
 </style>
