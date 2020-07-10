@@ -4,7 +4,11 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 
-import { Button, Input, Layout, Menu, Icon, Select, Anchor, List, Avatar, Divider, Pagination, Spin, message, notification, PageHeader, Tabs, Tag, Row, Col, Card } from 'ant-design-vue'
+import {
+  Button, Input, Layout, Menu, Icon, Select, Anchor, List, Avatar, Divider, Pagination, Spin, message, notification, PageHeader, Tabs, Tag, Row, Col, Card,
+  Result, FormModel, Radio, Form
+} from 'ant-design-vue'
+// import { RadioGroup } from 'ant-design-vue/types/radio/radio-group'
 // import { InputGroup } from 'ant-design-vue/types/input/input-group'
 // import 'ant-design-vue/dist/antd.css'
 
@@ -21,6 +25,7 @@ message.config({
 
 Vue.component(Button.name, Button)
 Vue.component(Input.name, Input)
+Vue.component(Input.TextArea.name, Input.TextArea)
 Vue.component(Layout.name, Layout)
 Vue.component(Layout.Header.name, Layout.Header)
 Vue.component(Layout.Content.name, Layout.Content)
@@ -51,6 +56,14 @@ Vue.component(Row.name, Row)
 Vue.component(Col.name, Col)
 Vue.component(Card.name, Card)
 Vue.component(Card.Meta.name, Card.Meta)
+Vue.component(Result.name, Result)
+Vue.component(FormModel.name, FormModel)
+Vue.component(FormModel.Item.name, FormModel.Item)
+Vue.component(Radio.name, Radio)
+Vue.component(Radio.Group.name, Radio.Group)
+Vue.component(Radio.Button.name, Radio.Button)
+Vue.component(Form.name, Form)
+Vue.component(Form.Item.name, Form.Item)
 
 new Vue({
   router,

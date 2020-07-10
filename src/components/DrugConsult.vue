@@ -37,6 +37,7 @@
         <div class="search-content">
           <!-- <consult-list></consult-list>
           <consult-detail></consult-detail>-->
+          <a-result v-show="visible" status="404" title="还没有检索结果" sub-title="请在上部搜索框中输入并检索"></a-result>
           <a-spin :spinning="spin" tip="Loading...">
             <ul class="list">
               <li v-for="(item, index) in list" :key="item.id">
@@ -67,11 +68,11 @@
           <a-row :gutter="[30,30]">
             <a-col :span="8" v-for=" item in recommendList" :key="item.id">
               <a-card hoverable>
-                <img slot="cover"  alt="example" :src="item.url" />
+                <img slot="cover" alt="example" :src="item.url" />
                 <a-card-meta :title="item.K_type">
                   <template slot="description">
-                   <span class="recommond-body" > {{ item.Q_content }}</span>
-                    <a-button class="detail" size="small"  @click="toDetail(item.id)">详情>></a-button>
+                    <span class="recommond-body">{{ item.Q_content }}</span>
+                    <a-button class="detail" size="small" @click="toDetail(item.id)">详情>></a-button>
                   </template>
                 </a-card-meta>
               </a-card>
@@ -80,13 +81,117 @@
         </div>
       </div>
       <div id="introduction">
-          <h2>内容说明</h2>
+        <h2>内容说明</h2>
+        <h3>
+          <a-spin />内容简介
+        </h3>
+        <p>本网站提供部分药品用法用量、用药禁忌、不良反应、相互作用等用药知识查询。数据库内容包括常见疾病的常见分类。每个问题除了问题解答，还提供相关知识的拓展讲解。</p>
+        <a-divider></a-divider>
+        <h3>
+          <a-spin />使用介绍
+        </h3>
+        <p>您可在本网站各处搜索框输入您的内容或关键词进行筛选查询。搜索页主搜索框提供按相关度查询和按关键词查询两种方式，导航栏副搜索框默认按关键词查询。当按相关度查询时，系统会根据您输入内容的相关性排序展示，当按关键词查询时，系统会将您的输入内容作为一个关键词进行匹配。</p>
+        <a-divider></a-divider>
+        <h3>
+          <a-spin />特别说明
+        </h3>
+        <p>本网站内容仅供查询参考, 若您有任何疑问或补充，欢迎在“补充纠错”栏给我们留言。</p>
+        <a-divider></a-divider>
       </div>
       <div id="statistic">
-          <h2>数据统计</h2>
+        <h2>数据统计</h2>
+        <!-- <h3>
+          <a-spin />统计图
+        </h3>-->
+        <div id="chart1" style="width: 1000px; height: 400px;"></div>
+        <a-row class="book">
+          <a-col :span="12">
+            <ul>
+              <li class="adrs">《糖尿病用药咨询标准化手册 》 ISBN：978-7-117-24301-8</li>
+              <li class="adrs">《脑血管病用药咨询标准化手册 》 ISBN: 978-7-117-24412-1</li>
+              <li class="adrs">《乳腺肿瘤用药咨询标准化手册 》 ISBN: 978-7-117-24183-0</li>
+              <li class="adrs">《中成药慢病管理用药咨询标准化手册 》 ISBN: 978-7-117-23156-5</li>
+              <li class="adrs">《骨质疏松用药咨询标准化手册 》 ISBN: 978-7-117-24071-0</li>
+              <li class="adrs">《精神分裂症用药咨询标准化手册 》 ISBN: 978-7-117-24136-6</li>
+              <li class="adrs">《抑郁症用药咨询标准化手册 》 ISBN: 978-7-117-24195-3</li>
+              <li class="adrs">《高血压用药咨询标准化手册 》 ISBN: 978-7-117-22143-6</li>
+              <li class="adrs">《血栓栓塞性疾病用药咨询标准化手册 》 ISBN: 978-7-117-24135-9</li>
+              <li class="adrs">《肿瘤化疗及支持治疗用药咨询标准化手册 》 ISBN: 978-7-117-24572-2</li>
+              <li class="adrs">《戒烟管理用药咨询标准化手册 》 ISBN: 978-7-117-24155-7</li>
+            </ul>
+          </a-col>
+          <a-col :span="12">
+            <ul>
+              <li class="adrs">《儿童哮喘用药咨询标准化手册 》 ISBN: 978-7-117-22429-1</li>
+              <li class="adrs">《哮喘用药咨询标准化手册 》 ISBN: 978-7-117-24219-6</li>
+              <li class="adrs">《消化道肿瘤用药咨询标准化手册 》 ISBN: 978-7-117-22741-4</li>
+              <li class="adrs">《儿童保健用药咨询标准化手册 》 ISBN: 978-7-117-22761-2</li>
+              <li class="adrs">《癌痛治疗用药咨询标准化手册 》 ISBN: 978-7-117-22754-4</li>
+              <li class="adrs">《血脂异常用药咨询标准化手册 》 ISBN: 978-7-117-22144-3</li>
+              <li class="adrs">《妊娠及哺乳期用药咨询标准化手册 》 ISBN: 978-7-117-22665-3</li>
+              <li class="adrs">《中药煎煮用药咨询标准化手册 》 ISBN: 978-7-117-23157-2</li>
+              <li class="adrs">《结核病用药咨询标准化手册 》 ISBN: 978-7-117-22431-4</li>
+              <li class="adrs">《消化系统疾病用药咨询标准化手册 》 ISBN: 978-7-117-22383-6</li>
+              <li class="adrs">《眼科、耳鼻咽喉头颅外科用药咨询标准化手册》 ISBN: 978-7-117-22430-7</li>
+            </ul>
+          </a-col>
+        </a-row>
       </div>
       <div id="add">
-          <h2>补充纠错</h2>
+        <h2>补充纠错</h2>
+        <a-tabs default-active-key="1">
+          <a-tab-pane key="1">
+            <span slot="tab">
+              <a-icon type="apple" />补充
+            </span>
+            <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+              <a-form-item label="Note">
+                <a-input
+                  v-decorator="['note', { rules: [{ required: true, message: 'Please input your note!' }] }]"
+                />
+              </a-form-item>
+              <a-form-item label="Gender">
+                <a-select
+                  v-decorator="[
+          'gender',
+          { rules: [{ required: true, message: 'Please select your gender!' }] },
+        ]"
+                  placeholder="Select a option and change input text above"
+                >
+                  <a-select-option value="male">male</a-select-option>
+                  <a-select-option value="female">female</a-select-option>
+                </a-select>
+              </a-form-item>
+              <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
+                <a-button type="primary" html-type="submit">Submit</a-button>
+              </a-form-item>
+            </a-form>
+          </a-tab-pane>
+          <a-tab-pane key="2">
+            <span slot="tab">
+              <a-icon type="android" />纠错
+            </span>
+             <a-input placeholder="Basic usage" />
+            <a-textarea
+              v-model="value"
+              placeholder="Controlled autosize"
+              :auto-size="{ minRows: 3, maxRows: 5 }"
+            />
+                <a-button type="primary" html-type="submit">Submit</a-button>
+
+          </a-tab-pane>
+        </a-tabs>
+        <!-- <a-form layout="horizontal">
+          <a-form-item
+            label="Form Layout"
+
+          >
+            <a-radio-group default-value="horizontal" >
+              <a-radio-button value="horizontal">补充</a-radio-button>
+              <a-radio-button value="inline">纠错</a-radio-button>
+            </a-radio-group>
+          </a-form-item>
+        </a-form>-->
       </div>
     </div>
     <!-- 主体内容 -->
@@ -94,6 +199,7 @@
 </template>
 
 <script>
+import echarts from 'echarts'
 export default {
   // components: { ConsultList, ConsultDetail },
   data () {
@@ -112,13 +218,156 @@ export default {
       spin: false,
       // 推荐
       recommend: [],
-      recommendList: []
+      recommendList: [],
+      visible: true,
+      formLayout: 'horizontal',
+      form: this.$form.createForm(this, { name: 'coordinated' })
     }
   },
   mounted () {
     this.targetOffset = window.innerHeight / 2
     this.getRecommend()
     this.recommendList = this.recommend
+    var myChart = echarts.init(document.getElementById('chart1'))
+    var dataAxis = [
+      '糖尿病', '脑血管病', '乳腺肿瘤', '中成药慢病管理', '骨质疏松',
+      '精神分裂症', '抑郁症', '高血压', '血栓栓塞性疾病', '肿瘤化疗及支持治疗', '戒烟管理用药', '儿童哮喘用药', '哮喘用药', '消化道肿瘤用药', '眼科、耳鼻咽喉头颅外科', '儿童保健用药', '癌痛治疗用药', '血脂异常用药', '妊娠及哺乳期用药', '中药煎煮用药', '结核病用药', '消化系统疾病用药'
+    ]
+    var data = [50, 41, 50, 48, 42, 47, 106, 52, 50, 45, 50, 45, 40, 56, 50, 43, 43, 50, 54, 60, 64, 42]
+    var yMax = 100
+    var dataShadow = []
+
+    for (var i = 0; i < data.length; i++) {
+      dataShadow.push(yMax)
+    }
+
+    var option = {
+      title: {
+        text: '数据统计'
+        // subtext: 'Feature Sample: Gradient Color, Shadow, Click Zoom'
+      },
+      xAxis: {
+        data: dataAxis,
+        axisLabel: {
+          inside: false,
+          textStyle: {
+            color: '#fff'
+          }
+        },
+        axisTick: {
+          show: false
+        },
+        axisLine: {
+          show: false
+        },
+        z: 10
+      },
+      yAxis: {
+        axisLine: {
+          show: false
+        },
+        axisTick: {
+          show: false
+        },
+        axisLabel: {
+          textStyle: {
+            color: '#999'
+          }
+        }
+      },
+      dataZoom: [
+        {
+          type: 'inside'
+        }
+      ],
+      series: [
+        { // For shadow
+          type: 'bar',
+          itemStyle: {
+            color: 'rgba(0,0,0,0.05)'
+          },
+          barGap: '-100%',
+          barCategoryGap: '40%',
+          data: dataShadow,
+          animation: true
+        },
+        {
+          type: 'bar',
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(
+              0, 0, 0, 1,
+              [
+                { offset: 0, color: '#83bff6' },
+                { offset: 0.5, color: '#188df0' },
+                { offset: 1, color: '#188df0' }
+              ]
+            )
+          },
+          emphasis: {
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                  { offset: 0, color: '#2378f7' },
+                  { offset: 0.7, color: '#2378f7' },
+                  { offset: 1, color: '#83bff6' }
+                ]
+              )
+            }
+          },
+          data: data
+        }
+      ],
+      aspectRatio: 3.5,
+      layout: {
+        padding: {
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0
+        }
+      },
+      legend: {
+        display: false
+      },
+      scales: {
+        xAxes: [{
+
+          categoryPercentage: 0.5,
+          gridLines: {
+            color: 'transparent'
+          },
+          scaleLabel: {
+            display: true,
+            labelString: '参考书籍'
+          }
+        }],
+        yAxes: [{
+          gridLines: {
+            color: 'transparent'
+          },
+          ticks: {
+            beginAtZero: true
+          },
+          scaleLabel: {
+            display: true,
+            labelString: '问题数目'
+          }
+        }]
+      }
+    }
+
+    // Enable data zoom when user click bar.
+    var zoomSize = 6
+    myChart.on('click', function (params) {
+      console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)])
+      myChart.dispatchAction({
+        type: 'dataZoom',
+        startValue: dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)],
+        endValue: dataAxis[Math.min(params.dataIndex + zoomSize / 2, data.length - 1)]
+      })
+    })
+    myChart.setOption(option)
     // console.log(this.recommendList)
   },
   methods: {
@@ -135,6 +384,11 @@ export default {
       this.spin = true
       const { data: res } = await this.$http.post(`/index/resultlist?pagenum=${this.searchForm.pagenum}`, JSON.stringify(this.searchForm))
       // console.log(res)
+      if (res.data.length === 0) {
+        this.visible = true
+      } else {
+        this.visible = false
+      }
       this.list = res.data
       this.page = res.current_page
       this.total = res.total
@@ -229,10 +483,16 @@ export default {
   float: right;
 }
 #introduction {
+  max-width: 1000px;
+  margin: 0 auto;
   min-height: 300px;
+  padding-top: 20px;
 }
 #statistic {
   min-height: 300px;
+  max-width: 1000px;
+  margin: 0 auto;
+  /* background-color: #ccc; */
 }
 .search-content {
   width: 60%;
@@ -291,10 +551,30 @@ h2 {
 }
 .recommond-body {
   min-height: 84px;
-    overflow: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
+}
+#introduction h3 {
+  font-weight: 700;
+  color: #448885;
+}
+#introduction .ant-spin {
+  padding-right: 10px;
+}
+#introduction p {
+  color: #868686;
+}
+.book li {
+  list-style: none;
+  color: #868686;
+  line-height: 30px;
+}
+#add {
+  max-width: 1000px;
+  min-height: 400px;
+  margin: 10px auto;
 }
 </style>
