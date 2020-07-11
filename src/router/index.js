@@ -25,10 +25,7 @@ const routes = [
       { path: '/index', component: () => import(/* webpackChunkName: "about" */ '../components/Index.vue') },
       {
         path: '/drugconsult',
-        component: () => import(/* webpackChunkName: "about" */ '../components/DrugConsult.vue'),
-        children: [
-          // { path: '/consultList', component: () => import(/* webpackChunkName: "about" */ '../components/DrugConsult/ConsultList.vue') },
-        ]
+        component: () => import(/* webpackChunkName: "about" */ '../components/DrugConsult.vue')
       },
       { path: '/introduction', component: () => import(/* webpackChunkName: "about" */ '../components/Introduction.vue') },
       { path: '/consultDetail', component: () => import(/* webpackChunkName: "about" */ '../components/DrugConsult/ConsultDetail.vue') }

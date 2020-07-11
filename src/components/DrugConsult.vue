@@ -37,8 +37,8 @@
         <div class="search-content">
           <!-- <consult-list></consult-list>
           <consult-detail></consult-detail>-->
-          <a-result v-show="visible" status="404" title="还没有检索结果" sub-title="请在上部搜索框中输入并检索"></a-result>
           <a-spin :spinning="spin" tip="Loading...">
+            <a-result v-show="visible" status="404" title="还没有检索结果" sub-title="请在上部搜索框中输入并检索"></a-result>
             <ul class="list">
               <li v-for="(item, index) in list" :key="item.id">
                 <a class="link" @click="toDetail(item.id)">
@@ -144,41 +144,68 @@
             <span slot="tab">
               <a-icon type="apple" />补充
             </span>
-            <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-              <a-form-item label="Note">
+            <!-- 补充表单 -->
+            <a-form-model
+              ref="ruleForm"
+              :model="form"
+              :rules="rules"
+              :label-col="labelCol"
+              :wrapper-col="wrapperCol"
+            >
+              <a-form-model-item label="问题详情" prop="Q_content">
+                <a-input v-model="form.Q_content" type="textarea" />
+              </a-form-model-item>
+              <a-form-model-item ref="label" label="问题标签" prop="label">
                 <a-input
-                  v-decorator="['note', { rules: [{ required: true, message: 'Please input your note!' }] }]"
+                  v-model="form.label"
+                  @blur="
+          () => {
+            $refs.label.onFieldBlur();
+          }
+        "
                 />
-              </a-form-item>
-              <a-form-item label="Gender">
-                <a-select
-                  v-decorator="[
-          'gender',
-          { rules: [{ required: true, message: 'Please select your gender!' }] },
-        ]"
-                  placeholder="Select a option and change input text above"
-                >
-                  <a-select-option value="male">male</a-select-option>
-                  <a-select-option value="female">female</a-select-option>
-                </a-select>
-              </a-form-item>
-              <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
-                <a-button type="primary" html-type="submit">Submit</a-button>
-              </a-form-item>
-            </a-form>
+              </a-form-model-item>
+              <a-form-model-item label="参考材料">
+                <a-input v-model="form.Q_content" type="textarea" />
+              </a-form-model-item>
+              <a-form-model-item label="问题回答" prop="Q_answer">
+                <a-input v-model="form.Q_answer" type="textarea" />
+              </a-form-model-item>
+              <a-form-model-item label="知识拓展">
+                <a-input v-model="form.Q_content" type="textarea" />
+              </a-form-model-item>
+              <a-form-model-item label="其他说明">
+                <a-input v-model="form.Q_content" type="textarea" />
+              </a-form-model-item>
+              <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
+                <a-button type="primary" @click="onSubmit">提交</a-button>
+                <a-button style="margin-left: 10px;" @click="resetForm">重置</a-button>
+              </a-form-model-item>
+            </a-form-model>
+            <!-- 补充表单 -->
           </a-tab-pane>
           <a-tab-pane key="2">
             <span slot="tab">
               <a-icon type="android" />纠错
             </span>
-             <a-input placeholder="Basic usage" />
-            <a-textarea
-              v-model="value"
-              placeholder="Controlled autosize"
-              :auto-size="{ minRows: 3, maxRows: 5 }"
-            />
-                <a-button type="primary" html-type="submit">Submit</a-button>
-
+            <a-form-model
+              ref="errorForm"
+              :model="errorform"
+              :rules="errorRules"
+              :label-col="labelCol"
+              :wrapper-col="wrapperCol"
+            >
+              <a-form-model-item label="错误信息" prop="error">
+                <a-input v-model="errorform.error" type="textarea" />
+              </a-form-model-item>
+               <a-form-model-item label="纠正内容" prop="explain">
+                <a-input v-model="errorform.explain" type="textarea" />
+              </a-form-model-item>
+               <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
+                <a-button type="primary" @click="errorSubmit">提交</a-button>
+                <a-button style="margin-left: 10px;" @click="errorReset">重置</a-button>
+              </a-form-model-item>
+            </a-form-model>
           </a-tab-pane>
         </a-tabs>
         <!-- <a-form layout="horizontal">
@@ -221,7 +248,38 @@ export default {
       recommendList: [],
       visible: true,
       formLayout: 'horizontal',
-      form: this.$form.createForm(this, { name: 'coordinated' })
+      labelCol: { span: 4 },
+      wrapperCol: { span: 14 },
+      form: {
+        Q_content: '',
+        label: '',
+        Q_answer: ''
+      },
+      rules: {
+        Q_content: [
+          { required: true, message: '输入不能为空', trigger: 'blur' }
+        ],
+        label: [
+          { min: 1, max: 10, message: '长度在1-10之间', trigger: 'blur' }
+        ],
+        Q_answer: [
+          { required: true, message: '输入不能为空', trigger: 'blur' }
+        ]
+      },
+      errorform: {
+        error: '',
+        explain: ''
+
+      },
+      errorRules: {
+        error: [
+          { required: true, message: '输入不能为空', trigger: 'blur' }
+        ],
+        explain: [
+          { required: true, message: '输入不能为空', trigger: 'blur' }
+
+        ]
+      }
     }
   },
   mounted () {
@@ -432,8 +490,36 @@ export default {
         this.recommendList.push(result)
         // item.url = '../assets/recommend/img3.jpg'
       })
-    }
+    },
     //* *******问题推荐************** */
+    //* *******补充************** */
+    onSubmit () {
+      this.$refs.ruleForm.validate(valid => {
+        if (valid) {
+          alert('submit!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm () {
+      this.$refs.ruleForm.resetFields()
+    },
+    errorSubmit () {
+      this.$refs.errorRule.validate(valid => {
+        if (valid) {
+          alert('submit!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    errorReset () {
+      this.$refs.errorRule.resetFields()
+    }
+    //* *******补充************** */
 
   }
 }
