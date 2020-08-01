@@ -55,7 +55,7 @@
           <a-pagination
             @change="onChange"
             :hideOnSinglePage="true"
-            :default-current="page"
+            :default-current="1"
             :total="total"
           />
           <!-- <router-view></router-view> -->
@@ -83,17 +83,17 @@
       <div id="introduction">
         <h2>内容说明</h2>
         <h3>
-          <a-spin />内容简介
+          <a-icon type="sound" /> 内容简介
         </h3>
         <p>本网站提供部分药品用法用量、用药禁忌、不良反应、相互作用等用药知识查询。数据库内容包括常见疾病的常见分类。每个问题除了问题解答，还提供相关知识的拓展讲解。</p>
         <a-divider></a-divider>
         <h3>
-          <a-spin />使用介绍
+          <a-icon type="sound" /> 使用介绍
         </h3>
         <p>您可在本网站各处搜索框输入您的内容或关键词进行筛选查询。搜索页主搜索框提供按相关度查询和按关键词查询两种方式，导航栏副搜索框默认按关键词查询。当按相关度查询时，系统会根据您输入内容的相关性排序展示，当按关键词查询时，系统会将您的输入内容作为一个关键词进行匹配。</p>
         <a-divider></a-divider>
         <h3>
-          <a-spin />特别说明
+          <a-icon type="sound" /> 特别说明
         </h3>
         <p>本网站内容仅供查询参考, 若您有任何疑问或补充，欢迎在“补充纠错”栏给我们留言。</p>
         <a-divider></a-divider>
@@ -103,7 +103,7 @@
         <!-- <h3>
           <a-spin />统计图
         </h3>-->
-        <div id="chart1" style="width: 1000px; height: 400px;"></div>
+        <div id="chart1" style="width: 1000px; height: 500px;"></div>
         <a-row class="book">
           <a-col :span="12">
             <ul>
@@ -286,146 +286,7 @@ export default {
     this.targetOffset = window.innerHeight / 2
     this.getRecommend()
     this.recommendList = this.recommend
-    var myChart = echarts.init(document.getElementById('chart1'))
-    var dataAxis = [
-      '糖尿病', '脑血管病', '乳腺肿瘤', '中成药慢病管理', '骨质疏松',
-      '精神分裂症', '抑郁症', '高血压', '血栓栓塞性疾病', '肿瘤化疗及支持治疗', '戒烟管理用药', '儿童哮喘用药', '哮喘用药', '消化道肿瘤用药', '眼科、耳鼻咽喉头颅外科', '儿童保健用药', '癌痛治疗用药', '血脂异常用药', '妊娠及哺乳期用药', '中药煎煮用药', '结核病用药', '消化系统疾病用药'
-    ]
-    var data = [50, 41, 50, 48, 42, 47, 106, 52, 50, 45, 50, 45, 40, 56, 50, 43, 43, 50, 54, 60, 64, 42]
-    var yMax = 100
-    var dataShadow = []
-
-    for (var i = 0; i < data.length; i++) {
-      dataShadow.push(yMax)
-    }
-
-    var option = {
-      title: {
-        text: '数据统计'
-        // subtext: 'Feature Sample: Gradient Color, Shadow, Click Zoom'
-      },
-      xAxis: {
-        data: dataAxis,
-        axisLabel: {
-          inside: false,
-          textStyle: {
-            color: '#fff'
-          }
-        },
-        axisTick: {
-          show: false
-        },
-        axisLine: {
-          show: false
-        },
-        z: 10
-      },
-      yAxis: {
-        axisLine: {
-          show: false
-        },
-        axisTick: {
-          show: false
-        },
-        axisLabel: {
-          textStyle: {
-            color: '#999'
-          }
-        }
-      },
-      dataZoom: [
-        {
-          type: 'inside'
-        }
-      ],
-      series: [
-        { // For shadow
-          type: 'bar',
-          itemStyle: {
-            color: 'rgba(0,0,0,0.05)'
-          },
-          barGap: '-100%',
-          barCategoryGap: '40%',
-          data: dataShadow,
-          animation: true
-        },
-        {
-          type: 'bar',
-          itemStyle: {
-            color: new echarts.graphic.LinearGradient(
-              0, 0, 0, 1,
-              [
-                { offset: 0, color: '#83bff6' },
-                { offset: 0.5, color: '#188df0' },
-                { offset: 1, color: '#188df0' }
-              ]
-            )
-          },
-          emphasis: {
-            itemStyle: {
-              color: new echarts.graphic.LinearGradient(
-                0, 0, 0, 1,
-                [
-                  { offset: 0, color: '#2378f7' },
-                  { offset: 0.7, color: '#2378f7' },
-                  { offset: 1, color: '#83bff6' }
-                ]
-              )
-            }
-          },
-          data: data
-        }
-      ],
-      aspectRatio: 3.5,
-      layout: {
-        padding: {
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0
-        }
-      },
-      legend: {
-        display: false
-      },
-      scales: {
-        xAxes: [{
-
-          categoryPercentage: 0.5,
-          gridLines: {
-            color: 'transparent'
-          },
-          scaleLabel: {
-            display: true,
-            labelString: '参考书籍'
-          }
-        }],
-        yAxes: [{
-          gridLines: {
-            color: 'transparent'
-          },
-          ticks: {
-            beginAtZero: true
-          },
-          scaleLabel: {
-            display: true,
-            labelString: '问题数目'
-          }
-        }]
-      }
-    }
-
-    // Enable data zoom when user click bar.
-    var zoomSize = 6
-    myChart.on('click', function (params) {
-      console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)])
-      myChart.dispatchAction({
-        type: 'dataZoom',
-        startValue: dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)],
-        endValue: dataAxis[Math.min(params.dataIndex + zoomSize / 2, data.length - 1)]
-      })
-    })
-    myChart.setOption(option)
+    this.getGraph()
     // console.log(this.recommendList)
   },
   methods: {
@@ -440,6 +301,7 @@ export default {
         this.searchForm.way = 1
       }
       this.spin = true
+      console.log(this.searchForm)
       const { data: res } = await this.$http.post(`/index/resultlist?pagenum=${this.searchForm.pagenum}`, JSON.stringify(this.searchForm))
       // console.log(res)
       if (res.data.length === 0) {
@@ -447,6 +309,7 @@ export default {
       } else {
         this.visible = false
       }
+      console.log(res)
       this.list = res.data
       this.page = res.current_page
       this.total = res.total
@@ -492,6 +355,161 @@ export default {
       })
     },
     //* *******问题推荐************** */
+    //* *******条形图************** */
+    getGraph () {
+      var myChart = echarts.init(document.getElementById('chart1'))
+      var dataAxis = [
+        '糖尿病', '脑血管病', '乳腺肿瘤', '中成药慢病管理', '骨质疏松',
+        '精神分裂症', '抑郁症', '高血压', '血栓栓塞性疾病', '肿瘤化疗及支持治疗', '戒烟管理用药', '儿童哮喘用药', '哮喘用药', '消化道肿瘤用药', '眼科、耳鼻咽喉头颅外科', '儿童保健用药', '癌痛治疗用药', '血脂异常用药', '妊娠及哺乳期用药', '中药煎煮用药', '结核病用药', '消化系统疾病用药'
+      ]
+      var data = [50, 41, 50, 48, 42, 47, 106, 52, 50, 45, 50, 45, 40, 56, 50, 43, 43, 50, 54, 60, 64, 42]
+      var yMax = 100
+      var dataShadow = []
+
+      for (var i = 0; i < data.length; i++) {
+        dataShadow.push(yMax)
+      }
+
+      var option = {
+        title: {
+          text: '数据统计'
+          // subtext: 'Feature Sample: Gradient Color, Shadow, Click Zoom'
+        },
+
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          data: dataAxis,
+          axisLabel: {
+            inside: false,
+            interval: 0,
+            rotate: 40,
+            textStyle: {
+              color: '#868686'
+            }
+          },
+          axisTick: {
+            show: false
+          },
+          axisLine: {
+            show: false
+          },
+          z: 10
+        },
+        yAxis: {
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          axisLabel: {
+            textStyle: {
+              color: '#999'
+            }
+          }
+        },
+        dataZoom: [
+          {
+            type: 'inside'
+          }
+        ],
+        grid: {
+          left: '10%',
+          bottom: '30%'
+        },
+        series: [
+          { // For shadow
+            type: 'bar',
+            itemStyle: {
+              color: 'rgba(0,0,0,0.05)'
+            },
+            barGap: '-100%',
+            barCategoryGap: '40%',
+            data: dataShadow,
+            animation: true
+          },
+          {
+            type: 'bar',
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                  { offset: 0, color: '#83bff6' },
+                  { offset: 0.5, color: '#188df0' },
+                  { offset: 1, color: '#188df0' }
+                ]
+              )
+            },
+            emphasis: {
+              itemStyle: {
+                color: new echarts.graphic.LinearGradient(
+                  0, 0, 0, 1,
+                  [
+                    { offset: 0, color: '#2378f7' },
+                    { offset: 0.7, color: '#2378f7' },
+                    { offset: 1, color: '#83bff6' }
+                  ]
+                )
+              }
+            },
+            data: data
+          }
+        ],
+        aspectRatio: 3.5,
+        layout: {
+          padding: {
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0
+          }
+        },
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+
+            categoryPercentage: 0.5,
+            gridLines: {
+              color: 'transparent'
+            },
+            scaleLabel: {
+              display: true,
+              labelString: '参考书籍'
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              color: 'transparent'
+            },
+            ticks: {
+              beginAtZero: true
+            },
+            scaleLabel: {
+              display: true,
+              labelString: '问题数目'
+            }
+          }]
+        }
+      }
+
+      // Enable data zoom when user click bar.
+      var zoomSize = 6
+      myChart.on('click', function (params) {
+        console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)])
+        myChart.dispatchAction({
+          type: 'dataZoom',
+          startValue: dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)],
+          endValue: dataAxis[Math.min(params.dataIndex + zoomSize / 2, data.length - 1)]
+        })
+      })
+      myChart.setOption(option)
+    },
+    //* *******条形图************** */
+
     //* *******补充************** */
     onSubmit () {
       this.$refs.ruleForm.validate(valid => {

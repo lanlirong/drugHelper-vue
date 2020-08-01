@@ -11,28 +11,31 @@
       <a-menu-item key="introduction"  @click="toThis('introduction')"> <a-icon type="search" />药学检索</a-menu-item>
       <a-menu-item key="2"  ><a-icon type="file-search" />疾病解读</a-menu-item>
       <a-menu-item key="3"  > <a-icon type="sound" />科普宣教</a-menu-item>
-     <a-sub-menu>
+     <a-sub-menu v-show = '!isLogin'>
         <span slot="title" class="submenu-title-wrapper"
           ><a-icon type="user" />登录/注册</span
         >
-          <a-menu-item key="setting:1">
+          <a-menu-item key="setting:1" @click="showLogin">
             登录
           </a-menu-item>
           <a-menu-item key="setting:2">
             注册
           </a-menu-item>
       </a-sub-menu>
-      <!-- <a-sub-menu>
+      <a-sub-menu v-show = 'isLogin'>
         <span slot="title" class="submenu-title-wrapper"
-          ><a-icon type="user" />会飞的猫</span
+          ><a-icon type="user" />你好，{{userInfo.username}}</span
         >
-          <a-menu-item key="setting:1">
+          <a-menu-item key="setting:1" @click="showUserInfo">
             个人中心
           </a-menu-item>
-          <a-menu-item key="setting:2">
+        <a-menu-item key="setting:2">
+          消息中心
+        </a-menu-item>
+          <a-menu-item key="setting:3" @click="logout">
             退出
           </a-menu-item>
-      </a-sub-menu> -->
+      </a-sub-menu>
       </a-menu>
     </a-layout-header>
     <a-layout-content :style="{ marginTop: '70px' }">
@@ -46,6 +49,70 @@
       Ant Design ©2019 Created by cpu Llr
     </a-layout-footer>
   </a-layout>
+    <!--登录对话框-->
+    <a-modal v-model="visible" okText="登录" cancelText="取消" title="登录" @ok="login">
+      <a-form-model
+        ref="ruleForm"
+        :model="loginForm"
+        :rules="loginRules"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+      >
+        <a-form-model-item ref="name" label="登录名" prop="name">
+          <a-input
+            v-model="loginForm.name"
+            @blur="
+          () => {
+            $refs.name.onFieldBlur();
+          }
+        "
+          />
+        </a-form-model-item>
+        <a-form-model-item ref="password" label="密码" prop="password">
+          <a-input
+            type="password"
+            v-model="loginForm.password"
+            @blur="
+          () => {
+            $refs.name.onFieldBlur();
+          }
+        "
+          />
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
+    <!--登录对话框-->
+<!--个人信息抽屉-->
+    <a-drawer
+      :title="userInfo.username"
+      placement="right"
+      :closable="true"
+      :visible="userInfoVisible"
+      @close="onClose"
+    >
+      <h3 class="title-drawer">基本信息</h3>
+      <p>姓名： {{userInfo.name}}</p>
+      <!--<h5></h5>-->
+      <p>性别： {{userInfo.sex}}</p>
+      <p>执业： {{userInfo.job}}</p>
+      <p>电话： {{userInfo.tel}}</p>
+      <p>邮箱： {{userInfo.email}}</p>
+      <a-divider />
+      <h3 class="title-drawer">其他</h3>
+      <p>账号等级：<a-tag color="red">
+        L5
+      </a-tag> </p>
+
+        <div class="setting">
+      <a-button type="primary" class="setting-button">
+        编辑
+      </a-button>
+      <a-button type="primary" class="setting-button">
+        重置密码
+      </a-button>
+    </div>
+
+    </a-drawer>
   </div>
 </template>
 
@@ -60,7 +127,44 @@ export default {
   },
   data () {
     return {
-      current: ['index']
+      current: ['index'],
+      visible: false,
+      isLogin: false,
+      labelCol: { span: 4 },
+      wrapperCol: { span: 14 },
+      loginForm: {
+        name: 'user1',
+        password: '123456'
+      },
+      loginRules: {
+        name: [
+          {
+            required: true,
+            message: '请输入登录名',
+            trigger: 'blur'
+          },
+          {
+            max: 10,
+            message: '最大长度为10',
+            trigger: 'blur'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: '请输入密码',
+            trigger: 'blur'
+          },
+          {
+            min: 6,
+            max: 20,
+            message: '长度6-20',
+            trigger: 'blur'
+          }
+        ]
+      },
+      userInfo: {},
+      userInfoVisible: false
     }
   },
   created () {
@@ -69,11 +173,44 @@ export default {
     } else {
       this.current[0] = 'index'
     }
+    if (localStorage.getItem('userinfo')) {
+      this.userInfo = JSON.parse(localStorage.getItem('userinfo'))
+      this.isLogin = true
+    } else {
+      this.isLogin = false
+    }
   },
   methods: {
     toThis (path) {
       this.$router.push('/' + path)
       sessionStorage.setItem('current', path)
+    },
+    showLogin () {
+      this.visible = true
+    },
+    async login (e) {
+      console.log(this.loginForm)
+      const { data: res } = await this.$http.post('/Userinfo/login', JSON.stringify(this.loginForm))
+      console.log(res)
+      if (res.status === 200) {
+        this.$message.success(res.msg)
+        this.userInfo = res.data
+        localStorage.setItem('userinfo', JSON.stringify(this.userInfo))
+        // console.log(this.userInfo.username)
+        this.isLogin = true
+      }
+      this.visible = false
+    },
+    onClose () {
+      this.userInfoVisible = false
+    },
+    showUserInfo () {
+      this.userInfoVisible = true
+    },
+    logout () {
+      this.isLogin = false
+      localStorage.clear()
+      this.$message.success('已退出当前账号')
     }
   }
 }
@@ -101,6 +238,18 @@ export default {
 }
 .menu {
   float: right;
+}
+.title-drawer {
+  color: #448885;
+}
+.setting {
+  margin-top: 30px;
+  margin-top: 10vh;
+  text-align: center;
+
+}
+.setting .setting-button {
+  margin-right: 10px;
 }
 .ant-layout-header {
   background-color: #fff;
