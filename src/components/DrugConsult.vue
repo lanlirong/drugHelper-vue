@@ -619,7 +619,7 @@ export default {
 }
 .link:hover div {
   /* color: #6a9955 !important; */
-  text-decoration: underline;
+  /* text-decoration: underline; */
   /* background-color: #eee !important; */
 }
 .ant-pagination {
