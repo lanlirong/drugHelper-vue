@@ -41,7 +41,7 @@
     <a-layout-content :style="{ marginTop: '70px' }">
       <!-- <div class="banner"></div> -->
        <transition mode="out-in">
-       <router-view></router-view>
+       <router-view @showLogin = 'toLogin'></router-view>
       </transition>
       <!-- <div class="content"></div> -->
     </a-layout-content>
@@ -299,6 +299,10 @@ export default {
       sessionStorage.setItem('current', path)
     },
     showLogin () {
+      this.visible = true
+    },
+    toLogin (data) {
+      // console.log(data)
       this.visible = true
     },
     showRegister () {

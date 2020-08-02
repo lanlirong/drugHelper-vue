@@ -146,39 +146,39 @@
             </span>
             <!-- 补充表单 -->
             <a-form-model
-              ref="ruleForm"
-              :model="form"
-              :rules="rules"
+              ref="addForm"
+              :model="addForm"
+              :rules="addRules"
               :label-col="labelCol"
               :wrapper-col="wrapperCol"
             >
               <a-form-model-item label="问题详情" prop="Q_content">
-                <a-input v-model="form.Q_content" type="textarea" />
+                <a-input v-model="addForm.Q_content" type="textarea" />
               </a-form-model-item>
-              <a-form-model-item ref="label" label="问题标签" prop="label">
+              <a-form-model-item label="问题标签" prop="k_type">
                 <a-input
-                  v-model="form.label"
+                  v-model="addForm.k_type"
                   @blur="
           () => {
-            $refs.label.onFieldBlur();
+            $refs.k_type.onFieldBlur();
           }
         "
                 />
               </a-form-model-item>
               <a-form-model-item label="参考材料">
-                <a-input v-model="form.Q_content" type="textarea" />
+                <a-input v-model="addForm.source" type="textarea" />
               </a-form-model-item>
               <a-form-model-item label="问题回答" prop="Q_answer">
-                <a-input v-model="form.Q_answer" type="textarea" />
+                <a-input v-model="addForm.Q_answer" type="textarea" />
               </a-form-model-item>
               <a-form-model-item label="知识拓展">
-                <a-input v-model="form.Q_content" type="textarea" />
+                <a-input v-model="addForm.k_link" type="textarea" />
               </a-form-model-item>
               <a-form-model-item label="其他说明">
-                <a-input v-model="form.Q_content" type="textarea" />
+                <a-input v-model="addForm.other" type="textarea" />
               </a-form-model-item>
               <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
-                <a-button type="primary" @click="onSubmit">提交</a-button>
+                <a-button type="primary" @click="addMsg">提交</a-button>
                 <a-button style="margin-left: 10px;" @click="resetForm">重置</a-button>
               </a-form-model-item>
             </a-form-model>
@@ -190,16 +190,16 @@
             </span>
             <a-form-model
               ref="errorForm"
-              :model="errorform"
+              :model="errorForm"
               :rules="errorRules"
               :label-col="labelCol"
               :wrapper-col="wrapperCol"
             >
               <a-form-model-item label="错误信息" prop="error">
-                <a-input v-model="errorform.error" type="textarea" />
+                <a-input v-model="errorForm.error" type="textarea" />
               </a-form-model-item>
-               <a-form-model-item label="纠正内容" prop="explain">
-                <a-input v-model="errorform.explain" type="textarea" />
+               <a-form-model-item label="纠正内容" prop="correct">
+                <a-input v-model="errorForm.correct" type="textarea" />
               </a-form-model-item>
                <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
                 <a-button type="primary" @click="errorSubmit">提交</a-button>
@@ -250,25 +250,28 @@ export default {
       formLayout: 'horizontal',
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      form: {
+      addForm: {
         Q_content: '',
-        label: '',
-        Q_answer: ''
+        k_type: '',
+        source: '',
+        k_link: '',
+        Q_answer: '',
+        other: ''
       },
-      rules: {
+      addRules: {
         Q_content: [
           { required: true, message: '输入不能为空', trigger: 'blur' }
         ],
-        label: [
+        k_type: [
           { min: 1, max: 10, message: '长度在1-10之间', trigger: 'blur' }
         ],
         Q_answer: [
           { required: true, message: '输入不能为空', trigger: 'blur' }
         ]
       },
-      errorform: {
+      errorForm: {
         error: '',
-        explain: ''
+        correct: ''
 
       },
       errorRules: {
@@ -511,12 +514,27 @@ export default {
     //* *******条形图************** */
 
     //* *******补充************** */
-    onSubmit () {
-      this.$refs.ruleForm.validate(valid => {
+    addMsg () {
+      this.$refs.addForm.validate(async valid => {
         if (valid) {
-          alert('submit!')
+          // alert('submit!')
+          console.log(this.addForm)
+          if (localStorage.getItem('userinfo')) {
+            const userInfo = JSON.parse(localStorage.getItem('userinfo'))
+            this.addForm.username = userInfo.username
+            // console.log(this.addForm)
+            const { data: res } = await this.$http.post('/message/DrugConsult_check', JSON.stringify(this.addForm))
+            console.log(res)
+            if (res.status === 200) {
+              this.$message.success(res.msg)
+            } else {
+              this.$message.error(res.msg)
+            }
+          } else {
+            this.$emit('showLogin', true)
+          }
         } else {
-          console.log('error submit!!')
+          // console.log('error submit!!')
           return false
         }
       })
@@ -525,11 +543,27 @@ export default {
       this.$refs.ruleForm.resetFields()
     },
     errorSubmit () {
-      this.$refs.errorRule.validate(valid => {
+      this.$refs.errorForm.validate(async valid => {
         if (valid) {
-          alert('submit!')
+          // alert('submit!')
+          console.log(this.errorForm)
+          if (localStorage.getItem('userinfo')) {
+            const userInfo = JSON.parse(localStorage.getItem('userinfo'))
+            this.errorForm.username = userInfo.username
+            this.errorForm.type = 0
+            // console.log(this.addForm)
+            const { data: res } = await this.$http.post('/message/addError', JSON.stringify(this.errorForm))
+            console.log(res)
+            if (res.status === 200) {
+              this.$message.success(res.msg)
+            } else {
+              this.$message.error(res.msg)
+            }
+          } else {
+            this.$emit('showLogin', true)
+          }
         } else {
-          console.log('error submit!!')
+          // console.log('error submit!!')
           return false
         }
       })
