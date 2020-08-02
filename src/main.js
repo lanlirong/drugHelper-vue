@@ -6,7 +6,7 @@ import axios from 'axios'
 
 import {
   Button, Input, Layout, Menu, Icon, Select, Anchor, List, Avatar, Divider, Pagination, Spin, message, notification, PageHeader, Tabs, Tag, Row, Col, Card,
-  Result, FormModel, Radio, Form, Modal, Drawer
+  Result, FormModel, Radio, Form, Modal, Drawer, Checkbox
 } from 'ant-design-vue'
 // import { RadioGroup } from 'ant-design-vue/types/radio/radio-group'
 // import { InputGroup } from 'ant-design-vue/types/input/input-group'
@@ -37,6 +37,7 @@ Vue.component(Menu.SubMenu.name, Menu.SubMenu)
 Vue.component(Menu.ItemGroup.name, Menu.ItemGroup)
 Vue.component(Icon.name, Icon)
 Vue.component(Input.Search.name, Input.Search)
+Vue.component(Input.Password.name, Input.Password)
 Vue.component(Input.Group.name, Input.Group)
 Vue.component(Select.name, Select)
 Vue.component(Select.Option.name, Select.Option)
@@ -65,6 +66,7 @@ Vue.component(Radio.Button.name, Radio.Button)
 Vue.component(Form.name, Form)
 Vue.component(Modal.name, Modal)
 Vue.component(Drawer.name, Drawer)
+Vue.component(Checkbox.name, Checkbox)
 
 new Vue({
   router,

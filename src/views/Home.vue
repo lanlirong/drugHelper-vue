@@ -18,7 +18,7 @@
           <a-menu-item key="setting:1" @click="showLogin">
             登录
           </a-menu-item>
-          <a-menu-item key="setting:2">
+          <a-menu-item key="setting:2" @click="showRegister">
             注册
           </a-menu-item>
       </a-sub-menu>
@@ -74,14 +74,88 @@
             v-model="loginForm.password"
             @blur="
           () => {
-            $refs.name.onFieldBlur();
+            $refs.password.onFieldBlur();
           }
         "
           />
         </a-form-model-item>
+        <a-row>
+          <a-col :span="labelCol.span">
+          </a-col>
+          <a-col :span="wrapperCol.span">
+            <a-checkbox
+              v-decorator="[
+          'remember',
+          {
+            valuePropName: 'checked',
+            initialValue: true,
+          },
+        ]"
+            >
+              记住我
+            </a-checkbox>
+            <a class="login-form-forgot" href="#">
+              忘记密码?
+            </a>
+          </a-col>
+        </a-row>
+
       </a-form-model>
     </a-modal>
     <!--登录对话框-->
+    <!--注册对话框-->
+    <a-modal v-model="registerVisible" okText="注册" cancelText="取消" title="注册" @ok="register">
+      <a-form-model
+        ref="registerRuleForm"
+        :model="registerForm"
+        :rules="registerRules"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+      >
+        <a-form-model-item ref="username" label="登录名" prop="username">
+          <a-input
+            v-model="registerForm.username"
+            @blur="
+          () => {
+            $refs.username.onFieldBlur();
+          }
+        "
+          />
+        </a-form-model-item>
+        <a-form-model-item ref="password" label="密码" prop="password">
+          <a-input-password placeholder=""  v-model="registerForm.password"
+                            @blur="
+          () => {
+            $refs.password.onFieldBlur();
+          }
+        "/>
+
+        </a-form-model-item>
+        <a-form-model-item label="姓名">
+          <a-input v-model="registerForm.name" />
+        </a-form-model-item>
+        <a-form-model-item label="性别">
+          <a-radio-group v-model="registerForm.sex">
+            <a-radio value="男">
+              男
+            </a-radio>
+            <a-radio value="女">
+              女
+            </a-radio>
+          </a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item label="电话">
+          <a-input v-model="registerForm.tel" />
+        </a-form-model-item>
+        <a-form-model-item label="邮箱">
+          <a-input v-model="registerForm.email" />
+        </a-form-model-item>
+        <a-form-model-item label="职业">
+          <a-input v-model="registerForm.job" />
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
+    <!--注册对话框-->
 <!--个人信息抽屉-->
     <a-drawer
       :title="userInfo.username"
@@ -120,9 +194,11 @@
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
 
+import AFormModelItem from 'ant-design-vue/es/form-model/FormItem'
 export default {
   name: 'Home',
   components: {
+    AFormModelItem
     // HelloWorld
   },
   data () {
@@ -130,14 +206,51 @@ export default {
       current: ['index'],
       visible: false,
       isLogin: false,
+      registerVisible: false,
       labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
+      wrapperCol: { span: 18 },
       loginForm: {
         name: 'user1',
         password: '123456'
       },
       loginRules: {
         name: [
+          {
+            required: true,
+            message: '请输入登录名',
+            trigger: 'blur'
+          },
+          {
+            max: 10,
+            message: '最大长度为10',
+            trigger: 'blur'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: '请输入密码',
+            trigger: 'blur'
+          },
+          {
+            min: 6,
+            max: 20,
+            message: '长度6-20',
+            trigger: 'blur'
+          }
+        ]
+      },
+      registerForm: {
+        username: 'user2',
+        password: '123456',
+        name: '张三',
+        sex: '男',
+        tel: '18113484856',
+        email: '2342456322@qq.com',
+        job: '医生'
+      },
+      registerRules: {
+        username: [
           {
             required: true,
             message: '请输入登录名',
@@ -188,7 +301,10 @@ export default {
     showLogin () {
       this.visible = true
     },
-    async login (e) {
+    showRegister () {
+      this.registerVisible = true
+    },
+    async login () {
       console.log(this.loginForm)
       const { data: res } = await this.$http.post('/Userinfo/login', JSON.stringify(this.loginForm))
       console.log(res)
@@ -200,6 +316,20 @@ export default {
         this.isLogin = true
       }
       this.visible = false
+    },
+    async register () {
+      console.log(this.registerForm)
+      const { data: res } = await this.$http.post('/Userinfo/register', JSON.stringify(this.registerForm))
+      console.log(res)
+      if (res.status === 200) {
+        this.$message.success(res.msg)
+        this.registerVisible = false
+        this.visible = true
+        // console.log(this.userInfo.username)
+      } else {
+        this.$message.error(res.msg)
+      }
+      // this.visible = false
     },
     onClose () {
       this.userInfoVisible = false
